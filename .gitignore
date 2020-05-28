@@ -11,3 +11,5 @@ CMakeFiles/
 *.cmake
 Makefile
 Testing/
+
+.vscode

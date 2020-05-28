@@ -18,12 +18,16 @@ template <typename Collection>
 void dump_index_specific_stats(Collection const&, std::string const&) {}
 
 void dump_index_specific_stats(uniform_index const& coll,
+                               /* Uniform freq index collection */
                                std::string const& type) {
     stats_line()("type", type)("log_partition_size",
                                int(coll.params().log_partition_size));
+    // Output type, log_partition_size
 }
-
-void dump_index_specific_stats(opt_index const& coll, std::string const& type) {
+//
+void dump_index_specific_stats(opt_index const& coll,
+                               /* Optimal freq index collection */
+                               std::string const& type) {
     auto const& conf = configuration::get();
 
     double long_postings = 0;
@@ -31,6 +35,8 @@ void dump_index_specific_stats(opt_index const& coll, std::string const& type) {
     double freqs_partitions = 0;
 
     for (size_t s = 0; s < coll.size(); ++s) {
+        // Traverse every sequence in collection
+        // to calculate long_postings, docs and freqs' partitions
         auto const& list = coll[s];
         if (list.size() > constants::min_size) {
             long_postings += list.size();
@@ -43,6 +49,7 @@ void dump_index_specific_stats(opt_index const& coll, std::string const& type) {
         "fix_cost", conf.fix_cost)("docs_avg_part",
                                    long_postings / docs_partitions)(
         "freqs_avg_part", long_postings / freqs_partitions);
+    // Output type, conf's info. Calculate docs & freqs average parg
 }
 
 template <typename CollectionType>
