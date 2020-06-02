@@ -62,15 +62,15 @@ using adjusted_block_multi_stats_type =
 using single_rectangular_builder =
     decreasing_static_frequencies<single_dictionary_rectangular_type,
                                   adjusted_block_stats_type>;
-
+// 降序静态freq, 单个矩形字典, 调整后的block
 using single_packed_builder =
     decreasing_static_frequencies<single_dictionary_packed_type,
                                   adjusted_block_stats_type>;
-
+// 降序静态freq, 单个打包字典, 调整后的block
 using multi_packed_builder =
     decreasing_static_frequencies<multi_dictionary_packed_type,
                                   adjusted_block_multi_stats_type>;
-
+// 降序静态freq, 多个矩形字典, 调整后的block 多字典
 // DINT configurations (all use optimal block parsing)
 using single_rect_dint_index =
     dict_freq_index<single_rectangular_builder, opt_dint_single_dict_block>;

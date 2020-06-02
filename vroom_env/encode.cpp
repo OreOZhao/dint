@@ -103,7 +103,7 @@ void encode(std::string const& type, char const* collection_name,
             buf.push_back(*begin - prev - 1);
             if (docs)
                 prev = *begin;
-            universe += buf.back();
+            universe += buf.back();  // return the last element
         }
         assert(buf.size() == n);
 

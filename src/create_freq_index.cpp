@@ -63,7 +63,8 @@ void create_collection(std::string input_basename,
                        global_parameters const& params,
                        const char* output_filename, bool check,
                        std::string const& seq_type) {
-    binary_freq_collection input(input_basename.c_str());
+    binary_freq_collection input(
+        input_basename.c_str());  // c_str 返回字符串首地址
     size_t num_docs = input.num_docs();
     double tick = get_time_usecs();
     double user_tick = get_user_time_usecs();
@@ -125,7 +126,8 @@ int main(int argc, const char** argv) {
                   << std::endl;
         return 1;
     }
-
+    // index_type: single_rect_dint
+    // collection_basename: test_collection(.docs .freqs .sizes)
     std::string type = argv[1];
     const char* input_basename = argv[2];
     const char* output_filename = nullptr;
