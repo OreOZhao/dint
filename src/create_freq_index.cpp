@@ -68,10 +68,10 @@ void create_collection(std::string input_basename,
     size_t num_docs = input.num_docs();
     double tick = get_time_usecs();
     double user_tick = get_user_time_usecs();
-
+    // dict_freq_index builder
     typename CollectionType::builder builder(num_docs, params);
     build_model<CollectionType>(input_basename, builder);
-
+    // build freq index + build or load dict
     logger() << "Processing " << input.num_docs() << " documents..."
              << std::endl;
     progress_logger plog("Encoded");

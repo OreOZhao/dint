@@ -150,12 +150,13 @@ struct opt_dint_single_dict_block {
         for (uint32_t i = 1; i < n + 1; ++i) {
             path[i] = {i - 1, 1, 3 * i};
         }
-
+        // for each
         for (uint32_t i = 0; i < n; ++i) {
             uint32_t longest_run_size = 0;
             uint32_t run_size = std::min<uint64_t>(256, n - i);
             uint32_t index = EXCEPTIONS;
 
+            // find longest run size(optimal parsing)
             for (uint32_t j = i; j != i + run_size; ++j) {
                 if (begin[j] == 0) {
                     ++longest_run_size;
@@ -163,7 +164,7 @@ struct opt_dint_single_dict_block {
                     break;
                 }
             }
-
+            // if longest run size >= 1 codeword bits
             if (longest_run_size >= 16) {
                 uint32_t k = 256;
                 while (longest_run_size < k and k > 16) {
@@ -172,6 +173,7 @@ struct opt_dint_single_dict_block {
                 }
                 while (k >= 16) {
                     uint32_t c = path[i].cost + 1;
+                    // more than 1 codeword, cost + 1
                     if (path[i + k].cost > c) {
                         path[i + k] = {i, index, c};
                     }
@@ -180,10 +182,12 @@ struct opt_dint_single_dict_block {
                     ++index;
                 }
             }
-
+            // for each target, num_target_sizes = log2(16) + 1 = 5
             for (uint32_t s = 0; s < constants::num_target_sizes; ++s) {
+                // sub block size 等于对应的 target_sizes
                 uint32_t sub_block_size = constants::target_sizes[s];
                 uint32_t len = std::min<uint32_t>(sub_block_size, n - i);
+                // lookup begin, entry_size
                 index = builder.lookup(begin + i, len);
                 if (index != Builder::invalid_index) {
                     uint32_t c = path[i].cost + 1;
