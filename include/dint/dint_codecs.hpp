@@ -709,6 +709,7 @@ struct single_opt_dint {
     template <typename Builder>
     static void encode(Builder& builder, uint32_t const* begin, uint64_t n,
                        std::vector<uint8_t>& out, int b) {
+        // Builder: rectangular_dictionary.builder
         std::vector<node> path;
         path.resize(n + 2);
         path[0] = {0, 1, 0};  // dummy node

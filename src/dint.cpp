@@ -15,11 +15,11 @@
 #include "hash_utils.hpp"
 #include "binary_collection.hpp"
 #include "dint_codecs.hpp"
-#include "jobs.hpp"
-#include "semiasync_queue.hpp"
-
 
 using namespace ds2i;
+
+typedef binary_collection::posting_type const* iterator_type;
+const uint32_t num_jobs = 1 << 24;
 
 void save_if(char const* output_filename, std::vector<uint8_t> const& output) {
     if (output_filename) {
