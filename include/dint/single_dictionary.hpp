@@ -132,6 +132,7 @@ struct single_dictionary {
                 for (auto& cur : compacted_targets) {
                     std::copy(cur.entry.begin(), cur.entry.end(),
                               std::back_inserter(m_table));
+                    // copy entry to m_table
                 }
             }
 

@@ -7,7 +7,10 @@
 #include "util.hpp"
 #include "verify_collection.hpp"
 
+// Check index
+
 int main(int argc, char** argv) {
+    // index_type   index_file  collection_filename
     if (argc < 4) {
         std::cerr << "Usage " << argv[0] << ":\n"
                   << "\t<index_type> <index_filename> <collection_filename>"
@@ -28,8 +31,9 @@ int main(int argc, char** argv) {
     else if (index_type == BOOST_PP_STRINGIZE(T)) {                         \
         verify_collection<binary_freq_collection, BOOST_PP_CAT(T, _index)>( \
             input, index_filename);
-
+        // check sequence length, docID and freq's positions in sequence.
         BOOST_PP_SEQ_FOR_EACH(LOOP_BODY, _, DS2I_INDEX_TYPES);
+        // LOOP_BODY's expanded with each element in DS2I_INDEX_TYPES
 #undef LOOP_BODY
     } else {
         logger() << "ERROR: Unknown type " << index_type << std::endl;

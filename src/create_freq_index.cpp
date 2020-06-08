@@ -18,12 +18,16 @@ template <typename Collection>
 void dump_index_specific_stats(Collection const&, std::string const&) {}
 
 void dump_index_specific_stats(uniform_index const& coll,
+                               /* Uniform freq index collection */
                                std::string const& type) {
     stats_line()("type", type)("log_partition_size",
                                int(coll.params().log_partition_size));
+    // Output type, log_partition_size
 }
-
-void dump_index_specific_stats(opt_index const& coll, std::string const& type) {
+//
+void dump_index_specific_stats(opt_index const& coll,
+                               /* Optimal freq index collection */
+                               std::string const& type) {
     auto const& conf = configuration::get();
 
     double long_postings = 0;
@@ -31,6 +35,8 @@ void dump_index_specific_stats(opt_index const& coll, std::string const& type) {
     double freqs_partitions = 0;
 
     for (size_t s = 0; s < coll.size(); ++s) {
+        // Traverse every sequence in collection
+        // to calculate long_postings, docs and freqs' partitions
         auto const& list = coll[s];
         if (list.size() > constants::min_size) {
             long_postings += list.size();
@@ -43,6 +49,7 @@ void dump_index_specific_stats(opt_index const& coll, std::string const& type) {
         "fix_cost", conf.fix_cost)("docs_avg_part",
                                    long_postings / docs_partitions)(
         "freqs_avg_part", long_postings / freqs_partitions);
+    // Output type, conf's info. Calculate docs & freqs average parg
 }
 
 template <typename CollectionType>
@@ -56,14 +63,15 @@ void create_collection(std::string input_basename,
                        global_parameters const& params,
                        const char* output_filename, bool check,
                        std::string const& seq_type) {
-    binary_freq_collection input(input_basename.c_str());
+    binary_freq_collection input(
+        input_basename.c_str());  // c_str 返回字符串首地址
     size_t num_docs = input.num_docs();
     double tick = get_time_usecs();
     double user_tick = get_user_time_usecs();
-
+    // dict_freq_index builder
     typename CollectionType::builder builder(num_docs, params);
     build_model<CollectionType>(input_basename, builder);
-
+    // build freq index + build or load dict
     logger() << "Processing " << input.num_docs() << " documents..."
              << std::endl;
     progress_logger plog("Encoded");
@@ -118,7 +126,8 @@ int main(int argc, const char** argv) {
                   << std::endl;
         return 1;
     }
-
+    // index_type: single_rect_dint
+    // collection_basename: test_collection(.docs .freqs .sizes)
     std::string type = argv[1];
     const char* input_basename = argv[2];
     const char* output_filename = nullptr;
