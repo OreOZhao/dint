@@ -6,6 +6,14 @@ target_link_libraries(create_freq_index
     MaskedVByte
   )
 
+add_executable(dint dint.cpp)
+target_link_libraries(dint
+  ${Boost_LIBRARIES}
+    FastPFor_lib
+    streamvbyte
+    MaskedVByte
+  )
+
 add_executable(create_wand_data create_wand_data.cpp)
 target_link_libraries(create_wand_data
   ${Boost_LIBRARIES}
