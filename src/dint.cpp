@@ -75,13 +75,13 @@ void dump_index_specific_stats(opt_index const& coll,
     // Output type, conf's info. Calculate docs & freqs average parg
 }
 
-dint_stats single_rect_dint() {
+dint_stats single_rect_dint(std::string input_basename) {
     // single_rect_dint
     std::string s_r_type = "single_rect_dint";
     logger() << std::endl
              << std::endl
              << "Start DINT Type: " << s_r_type << std::endl;
-    std::string input_basename = "../test/test_data/test_collection";
+    // std::string input_basename = "../test/test_data/test_collection";
     const char* output_filename = "single_rect_dint.bin";
     bool check = false;
     ds2i::global_parameters params;
@@ -132,13 +132,13 @@ dint_stats single_rect_dint() {
     return get_stats(elapsed_secs, coll, s_r_type, plog.postings);
 }
 
-dint_stats single_packed_dint() {
+dint_stats single_packed_dint(std::string input_basename) {
     // single_packed_dint
     std::string s_p_type = "single_packed_dint";
     logger() << std::endl
              << std::endl
              << "Start DINT Type: " << s_p_type << std::endl;
-    std::string input_basename = "../test/test_data/test_collection";
+    // std::string input_basename = "../test/test_data/test_collection";
     const char* output_filename = "single_packed_dint.bin";
     bool check = false;
     ds2i::global_parameters params;
@@ -189,13 +189,13 @@ dint_stats single_packed_dint() {
     return get_stats(elapsed_secs, coll, s_p_type, plog.postings);
 }
 
-dint_stats multi_packed_dint() {
+dint_stats multi_packed_dint(std::string input_basename) {
     // multi_packed_dint
     std::string m_p_type = "multi_packed_dint";
     logger() << std::endl
              << std::endl
              << "Start DINT Type: " << m_p_type << std::endl;
-    std::string input_basename = "../test/test_data/test_collection";
+    // std::string input_basename = "../test/test_data/test_collection";
     const char* output_filename = "multi_packed_dint.bin";
     bool check = false;
     ds2i::global_parameters params;
@@ -247,9 +247,10 @@ dint_stats multi_packed_dint() {
 }
 
 int main(int argc, const char** argv) {
-    dint_stats s_r_stats = single_rect_dint();
-    dint_stats s_p_stats = single_packed_dint();
-    dint_stats m_p_stats = multi_packed_dint();
+    std::string basename = "/mnt/OPTANE/zhaoyu/Gov2/Gov2";
+    dint_stats s_r_stats = single_rect_dint(basename);
+    dint_stats s_p_stats = single_packed_dint(basename);
+    dint_stats m_p_stats = multi_packed_dint(basename);
     logger() << std::endl << "Dint Stats: " << std::endl;
     std::cout << "index\t\t\t\t"
               << "secs\t\t"
