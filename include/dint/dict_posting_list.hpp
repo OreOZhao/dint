@@ -12,6 +12,7 @@ struct dict_posting_list {
                       typename Dictionary::builder& freqs_dict_builder,
                       std::vector<uint8_t>& out, uint32_t n,
                       DocsIterator docs_begin, FreqsIterator freqs_begin) {
+        // logger() << "Calling write func" << std::endl;
         TightVariableByte::encode_single(n, out);
         uint64_t block_size = Coder::block_size;
         uint64_t blocks = succinct::util::ceil_div(n, block_size);

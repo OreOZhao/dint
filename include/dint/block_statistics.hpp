@@ -49,6 +49,7 @@ struct block_statistics {
                  << std::endl;
 
         map_type block_map;
+        // block_map<uint64_t, block_type>[index] = sequence
         boost::progress_display progress(input.num_postings() -
                                          (compute_gaps ? 2 : 0));
         total_integers = 0;

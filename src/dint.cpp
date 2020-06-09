@@ -18,97 +18,47 @@
 
 using namespace ds2i;
 
-typedef binary_collection::posting_type const* iterator_type;
-const uint32_t num_jobs = 1 << 24;
+template <typename Collection>
+void dump_index_specific_stats(Collection const&, std::string const&) {}
 
-void save_if(char const* output_filename, std::vector<uint8_t> const& output) {
-    if (output_filename) {
-        logger() << "writing encoded data..." << std::endl;
-        std::ofstream output_file(output_filename);
-        output_file.write(reinterpret_cast<char const*>(output.data()),
-                          output.size() * sizeof(output[0]));
-        output_file.close();
-        logger() << "DONE" << std::endl;
-    }
+void dump_index_specific_stats(uniform_index const& coll,
+                               /* Uniform freq index collection */
+                               std::string const& type) {
+    stats_line()("type", type)("log_partition_size",
+                               int(coll.params().log_partition_size));
+    // Output type, log_partition_size
 }
+//
+void dump_index_specific_stats(opt_index const& coll,
+                               /* Optimal freq index collection */
+                               std::string const& type) {
+    auto const& conf = configuration::get();
 
-void print_statistics(std::string type, char const* collection_name,
-                      std::vector<uint8_t> const& output,
-                      uint64_t num_total_ints, uint64_t num_processed_lists) {
-    double GiB_space = output.size() * 1.0 / constants::GiB;
-    double bpi_space = output.size() * sizeof(output[0]) * 8.0 / num_total_ints;
+    double long_postings = 0;
+    double docs_partitions = 0;
+    double freqs_partitions = 0;
 
-    logger() << "encoded " << num_processed_lists << " lists" << std::endl;
-    logger() << "encoded " << num_total_ints << " integers" << std::endl;
-    logger() << GiB_space << " [GiB]" << std::endl;
-    logger() << "bits x integer: " << bpi_space << std::endl;
+    for (size_t s = 0; s < coll.size(); ++s) {
+        // Traverse every sequence in collection
+        // to calculate long_postings, docs and freqs' partitions
+        auto const& list = coll[s];
+        if (list.size() > constants::min_size) {
+            long_postings += list.size();
+            docs_partitions += list.docs_enum().num_partitions();
+            freqs_partitions += list.freqs_enum().base().num_partitions();
+        }
+    }
 
-    // stats to std output
-    std::cout << "{";
-    std::cout << "\"filename\": \"" << collection_name << "\", ";
-    std::cout << "\"num_sequences\": \"" << num_processed_lists << "\", ";
-    std::cout << "\"num_integers\": \"" << num_total_ints << "\", ";
-    std::cout << "\"type\": \"" << type << "\", ";
-    std::cout << "\"GiB\": \"" << GiB_space << "\", ";
-    std::cout << "\"bpi\": \"" << bpi_space << "\"";
-    std::cout << "}" << std::endl;
+    stats_line()("type", type)("eps1", conf.eps1)("eps2", conf.eps2)(
+        "fix_cost", conf.fix_cost)("docs_avg_part",
+                                   long_postings / docs_partitions)(
+        "freqs_avg_part", long_postings / freqs_partitions);
+    // Output type, conf's info. Calculate docs & freqs average parg
 }
 
 template <typename Encoder, typename Dictionary>
 void encode_dint(std::string const& type, char const* coll_file,
-                 char const* encoded_file, char const* dict_filename) {
-    binary_collection input(coll_file);
-    auto it = input.begin();
-    uint64_t num_processed_lists = 0;
-    uint64_t num_total_ints = 0;
-
-    std::ifstream dict_file(dict_filename);
-    typedef typename single_dictionary_rectangular_type::builder Builder;
-    Builder dict_builder;
-    dict_builder.load(dict_file);
-    dict_file.close();
-    logger() << "preparing for encoding..." << std::endl;
-    dict_builder.prepare_for_encoding();
-    dict_builder.print_usage();
-
-    uint64_t total_progress = input.num_postings();
-    bool docs = true;
-    boost::filesystem::path collection_path(coll_file);
-    if (collection_path.extension() == ".freqs") {
-        docs = false;
-        logger() << "encoding freqs..." << std::endl;
-    } else if (collection_path.extension() == ".docs") {
-        // skip first singleton sequence, containing num. of docs
-        ++it;
-        total_progress -= 2;
-        logger() << "encoding docs..." << std::endl;
-    } else {
-        throw std::runtime_error("unsupported file format");
-    }
-
-    std::vector<uint8_t> output;
-    uint64_t bytes = 5 * constants::GiB;
-    output.reserve(bytes);
-
-    std::vector<uint32_t> buf;
-    boost::progress_display progress(total_progress);
-    semiasync_queue jobs_queue(num_jobs);
-
-    for (; it != input.end(); ++it) {
-        auto const& list = *it;
-        uint32_t n = list.size();
-        std::shared_ptr<dint_sequence_adder<iterator_type, Encoder, Builder>>
-            ptr(new dint_sequence_adder<iterator_type, Encoder, Builder>(
-                list.begin(), n, dict_builder, progress, output, docs,
-                num_processed_lists, num_total_ints));
-        jobs_queue.add_job(ptr, n);
-    }
-
-    jobs_queue.complete();
-    print_statistics(type, coll_file, output, num_total_ints,
-                     num_processed_lists);
-    save_if(encoded_file, output);
-}
+                 char const* encoded_file, char const* dict_filename) {}
 
 template <typename Decoder, typename Dictionary>
 void decode_dint(std::string const& type, char const* encoded_data_filename,
@@ -160,8 +110,8 @@ void single_rect_dint() {
         "construction_time", elapsed_secs)("construction_user_time",
                                            user_elapsed_secs);
 
-    // dump_stats(coll, s_r_type, plog.postings);
-    // dump_index_specific_stats(coll, s_r_type);
+    dump_stats(coll, s_r_type, plog.postings);
+    dump_index_specific_stats(coll, s_r_type);
 
     if (output_filename) {
         succinct::mapper::freeze(coll, output_filename);
@@ -174,13 +124,7 @@ void single_rect_dint() {
     std::string block_stats_filename =
         "test_collection.freqs.block_statistics-16-adjusted";
     data_type dt = data_type::freqs;
-
-    encode_dint<single_opt_dint, single_dictionary_rectangular_type>(
-        s_r_type, freq_coll_file, encoded_file, freq_dict_file);
-    encode_dint<single_greedy_dint, single_dictionary_rectangular_type>(
-        s_r_type, freq_coll_file, encoded_file, freq_dict_file);
 }
-
 int main(int argc, const char** argv) {
     single_rect_dint();
 }

@@ -522,6 +522,7 @@ private:
     }
 };
 
+// without blocking mechanism
 struct dint_statistics {
     dint_statistics()
         : ints_distr(7, 0)
