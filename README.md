@@ -27,6 +27,13 @@ building:
 To build the code on Unix systems (see file `CMakeLists.txt` for the used compilation flags), it is sufficient to do the following:
 
     $ mkdir build
+
+Move test Shell to build
+
+    $ mv testall.sh build/testall.sh
+
+Build code
+
     $ cd build
     $ cmake .. -DCMAKE_BUILD_TYPE=Release
     $ make -j[number of jobs]
@@ -35,6 +42,9 @@ Setting `[number of jobs]` is recommended, e.g., `make -j4`.
 
 Unless otherwise specified, for the rest of this guide we assume that we type the terminal commands of the following examples from the created directory `build`.
 
+Run test Shell. Remember to change the "basename" argument in `dint.cpp`, and the `testall.sh` accordingly.
+
+    $ sh testall.sh
 
 Input data format
 -----------------
