@@ -256,6 +256,31 @@ struct multi_dictionary {
         // print vocabulary entries usage
         void print_usage() {
             // TODO
+            std::vector<uint32_t> sizes;
+            sizes.push_back(EXCEPTIONS);
+            for (uint32_t i = 0; i < constants::num_target_sizes; ++i) {
+                sizes.push_back(0);
+            }
+            sizes.push_back(5);  // for the runs
+
+            for (uint64_t i = reserved * (max_entry_size + 1);
+                 i < m_table.size(); i += max_entry_size + 1) {
+                uint32_t size = m_table[i + max_entry_size];
+                uint32_t index = ceil_log2(size) + 1;
+                assert(index < sizes.size());
+                sizes[index] += 1;
+            }
+
+            std::cout << "rare: " << EXCEPTIONS << " ("
+                      << EXCEPTIONS * 100.0 / num_entries << "%)" << std::endl;
+            for (uint32_t i = 0; i < constants::num_target_sizes; ++i) {
+                std::cout << "entries of size " << (uint32_t(1) << i) << ": "
+                          << sizes[i + 1] << "("
+                          << sizes[i + 1] * 100.0 / num_entries << "%)"
+                          << std::endl;
+            }
+            std::cout << "freq.: 5 (" << 5 * 100.0 / num_entries << "%)"
+                      << std::endl;
         }
 
         uint32_t size(uint32_t dictionary_id, uint32_t i) const {
