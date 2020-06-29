@@ -303,7 +303,7 @@ dint_stats single_overlapped_dint(std::string input_basename) {
 }
 
 dint_stats multi_overlapped_dint(std::string input_basename) {
-    std::string m_o_type = "single_overlapped_dint";
+    std::string m_o_type = "multi_overlapped_dint";
     logger() << std::endl
              << std::endl
              << "Start DINT Type: " << m_o_type << std::endl;
