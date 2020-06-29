@@ -70,6 +70,14 @@ using single_packed_builder =
 using multi_packed_builder =
     decreasing_static_frequencies<multi_dictionary_packed_type,
                                   adjusted_block_multi_stats_type>;
+
+using single_overlapped_builder =
+    decreasing_static_frequencies<single_dictionary_overlapped_type,
+                                  adjusted_block_stats_type>;
+using multi_overlapped_builder =
+    decreasing_static_frequencies<multi_dictionary_overlapped_type,
+                                  adjusted_block_multi_stats_type>;
+
 // 降序静态freq, 多个矩形字典, 调整后的block 多字典
 // DINT configurations (all use optimal block parsing)
 using single_rect_dint_index =
@@ -78,6 +86,12 @@ using single_packed_dint_index =
     dict_freq_index<single_packed_builder, opt_dint_single_dict_block>;
 using multi_packed_dint_index =
     dict_freq_index<multi_packed_builder, opt_dint_multi_dict_block>;
+
+using single_overlapped_dint_index =
+    dict_freq_index<single_overlapped_builder, opt_dint_single_dict_block>;
+using multi_overlapped_dint_index =
+    dict_freq_index<multi_overlapped_builder, opt_dint_multi_dict_block>;
+
 }  // namespace ds2i
 
 #define DS2I_INDEX_TYPES                                                       \

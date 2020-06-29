@@ -246,12 +246,127 @@ dint_stats multi_packed_dint(std::string input_basename) {
     return get_stats(elapsed_secs, coll, m_p_type, plog.postings);
 }
 
+dint_stats single_overlapped_dint(std::string input_basename) {
+    std::string s_o_type = "single_overlapped_dint";
+    logger() << std::endl
+             << std::endl
+             << "Start DINT Type: " << s_o_type << std::endl;
+    // std::string input_basename = "../test/test_data/test_collection";
+    const char* output_filename = "single_overlapped_dint.bin";
+    bool check = false;
+    ds2i::global_parameters params;
+    params.log_partition_size = configuration::get().log_partition_size;
+    binary_freq_collection input(input_basename.c_str());
+    size_t num_docs = input.num_docs();
+
+    double tick = get_time_usecs();
+    double user_tick = get_user_time_usecs();
+    // create single overlapped dint freq index collection
+    single_overlapped_dint_index::builder builder(num_docs, params);
+    builder.build_model(input_basename);
+    logger() << "Processing " << input.num_docs() << " documents..."
+             << std::endl;
+    progress_logger plog("Encoded");
+
+    boost::progress_display progress(input.num_postings());
+
+    for (auto const& plist : input) {
+        uint64_t n = plist.docs.size();
+        if (n > constants::min_size) {
+            uint64_t freqs_sum = std::accumulate(
+                plist.freqs.begin(), plist.freqs.end(), uint64_t(0));
+            builder.add_posting_list(n, plist.docs.begin(), plist.freqs.begin(),
+                                     freqs_sum);
+            plog.done_sequence(n);
+            progress += n + plist.freqs.size() + 2;
+        }
+    }
+    single_overlapped_dint_index coll;
+    builder.build(coll);
+    double elapsed_secs = (get_time_usecs() - tick) / 1000000;
+    double user_elapsed_secs = (get_user_time_usecs() - user_tick) / 1000000;
+    logger() << s_o_type << " collection built in " << elapsed_secs
+             << " seconds" << std::endl;
+
+    stats_line()("type", s_o_type)("worker_threads",
+                                   configuration::get().worker_threads)(
+        "construction_time", elapsed_secs)("construction_user_time",
+                                           user_elapsed_secs);
+
+    dump_stats(coll, s_o_type, plog.postings);
+    dump_index_specific_stats(coll, s_o_type);
+
+    if (output_filename) {
+        succinct::mapper::freeze(coll, output_filename);
+    }
+    return get_stats(elapsed_secs, coll, s_o_type, plog.postings);
+}
+
+dint_stats multi_overlapped_dint(std::string input_basename) {
+    std::string m_o_type = "single_overlapped_dint";
+    logger() << std::endl
+             << std::endl
+             << "Start DINT Type: " << m_o_type << std::endl;
+    // std::string input_basename = "../test/test_data/test_collection";
+    const char* output_filename = "multi_overlapped_dint.bin";
+    bool check = false;
+    ds2i::global_parameters params;
+    params.log_partition_size = configuration::get().log_partition_size;
+    binary_freq_collection input(input_basename.c_str());
+    size_t num_docs = input.num_docs();
+
+    double tick = get_time_usecs();
+    double user_tick = get_user_time_usecs();
+    // create single overlapped dint freq index collection
+    multi_overlapped_dint_index::builder builder(num_docs, params);
+    builder.build_model(input_basename);
+    logger() << "Processing " << input.num_docs() << " documents..."
+             << std::endl;
+    progress_logger plog("Encoded");
+
+    boost::progress_display progress(input.num_postings());
+
+    for (auto const& plist : input) {
+        uint64_t n = plist.docs.size();
+        if (n > constants::min_size) {
+            uint64_t freqs_sum = std::accumulate(
+                plist.freqs.begin(), plist.freqs.end(), uint64_t(0));
+            builder.add_posting_list(n, plist.docs.begin(), plist.freqs.begin(),
+                                     freqs_sum);
+            plog.done_sequence(n);
+            progress += n + plist.freqs.size() + 2;
+        }
+    }
+    multi_overlapped_dint_index coll;
+    builder.build(coll);
+    double elapsed_secs = (get_time_usecs() - tick) / 1000000;
+    double user_elapsed_secs = (get_user_time_usecs() - user_tick) / 1000000;
+    logger() << m_o_type << " collection built in " << elapsed_secs
+             << " seconds" << std::endl;
+
+    stats_line()("type", m_o_type)("worker_threads",
+                                   configuration::get().worker_threads)(
+        "construction_time", elapsed_secs)("construction_user_time",
+                                           user_elapsed_secs);
+
+    dump_stats(coll, m_o_type, plog.postings);
+    dump_index_specific_stats(coll, m_o_type);
+
+    if (output_filename) {
+        succinct::mapper::freeze(coll, output_filename);
+    }
+    return get_stats(elapsed_secs, coll, m_o_type, plog.postings);
+}
+
 int main(int argc, const char** argv) {
-    std::string basename = "../test/test_data/test_collection";
+    std::string basename = "../new/Gov2";
     // std::string basename = "/mnt/OPTANE/zhaoyu/Gov2/Gov2";
     dint_stats s_r_stats = single_rect_dint(basename);
     dint_stats s_p_stats = single_packed_dint(basename);
     dint_stats m_p_stats = multi_packed_dint(basename);
+    // dint_stats s_o_stats = single_overlapped_dint(basename);
+    // dint_stats m_o_stats = multi_overlapped_dint(basename);
+    /*
     logger() << std::endl << "Dint Stats: " << std::endl;
     std::cout << "index\t\t\t\t"
               << "secs\t\t"
@@ -266,4 +381,5 @@ int main(int argc, const char** argv) {
     std::cout << "multi_packed_dint\t\t" << m_p_stats.secs << "\t\t"
               << m_p_stats.docs_bpi << "\t\t" << m_p_stats.freqs_bpi << "\t\t"
               << std::endl;
+              */
 }
