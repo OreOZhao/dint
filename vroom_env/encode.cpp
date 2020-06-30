@@ -308,6 +308,12 @@ int main(int argc, char** argv) {
     } else if (type == std::string("multi_packed_dint")) {
         encode_dint<multi_opt_dint, multi_dictionary_packed_type>(
             type, collection_name, output_filename, dictionary_filename);
+    } else if (type == std::string("single_overlapped_dint")) {
+        encode_dint<single_opt_dint, single_dictionary_overlapped_type>(
+            type, collection_name, output_filename, dictionary_filename);
+    } else if (type == std::string("multi_overlapped_dint")) {
+        encode_dint<multi_opt_dint, multi_dictionary_overlapped_type>(
+            type, collection_name, output_filename, dictionary_filename);
     } else if (type == std::string("pef")) {
         encode_pef(collection_name, output_filename);
     } else {
