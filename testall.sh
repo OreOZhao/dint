@@ -1,20 +1,24 @@
-./dint
 
-./queries single_packed_dint and single_packed_dint.bin < ../test/test_data/queries
 
-./queries multi_packed_dint and multi_packed_dint.bin < ../test/test_data/queries
+./queries single_packed_dint and single_packed_dint.bin < ../new/Million_QueryID
 
-./encode single_rect_dint ../test/test_data/test_collection.docs --dict dict.test_collection.docs.single_rect.DSF-65536-16 --out test.bin
-./decode single_rect_dint test.bin --dict dict.test_collection.docs.single_rect.DSF-65536-16
-./encode single_rect_dint ../test/test_data/test_collection.freqs --dict dict.test_collection.freqs.single_rect.DSF-65536-16 --out test.bin
-./decode single_rect_dint test.bin --dict dict.test_collection.freqs.single_rect.DSF-65536-16
+./queries single_overlapped_dint and single_overlapped_dint.bin < ../new/Million_QueryID
 
-./encode single_packed_dint ../test/test_data/test_collection.docs --dict dict.test_collection.docs.single_packed.DSF-65536-16 --out test.bin
-./decode single_packed_dint test.bin --dict dict.test_collection.docs.single_packed.DSF-65536-16
-./encode single_packed_dint ../test/test_data/test_collection.freqs --dict dict.test_collection.freqs.single_packed.DSF-65536-16 --out test.bin
-./decode single_packed_dint test.bin --dict dict.test_collection.freqs.single_packed.DSF-65536-16
+./queries multi_packed_dint and multi_packed_dint.bin < ../new/Million_QueryID
 
-./encode multi_packed_dint ../test/test_data/test_collection.docs --dict dict.test_collection.docs.multi_packed.DSF-65536-16 --out test.bin
-./decode multi_packed_dint test.bin --dict dict.test_collection.docs.multi_packed.DSF-65536-16
-./encode multi_packed_dint ../test/test_data/test_collection.freqs --dict dict.test_collection.freqs.multi_packed.DSF-65536-16 --out test.bin
-./decode multi_packed_dint test.bin --dict dict.test_collection.freqs.multi_packed.DSF-65536-16
+./queries multi_overlapped_dint and multi_overlapped_dint.bin < ../new/Million_QueryID
+
+./encode single_rect_dint ../new/Gov2.docs --dict dict.Gov2.docs.single_rect.DSF-65536-16 --out test.bin
+./decode single_rect_dint test.bin --dict dict.Gov2.docs.single_rect.DSF-65536-16
+./encode single_rect_dint ../new/Gov2.freqs --dict dict.Gov2.freqs.single_rect.DSF-65536-16 --out test.bin
+./decode single_rect_dint test.bin --dict dict.Gov2.freqs.single_rect.DSF-65536-16
+
+./encode single_packed_dint ../new/Gov2.docs --dict dict.Gov2.docs.single_packed.DSF-65536-16 --out test.bin
+./decode single_packed_dint test.bin --dict dict.Gov2.docs.single_packed.DSF-65536-16
+./encode single_packed_dint ../new/Gov2.freqs --dict dict.Gov2.freqs.single_packed.DSF-65536-16 --out test.bin
+./decode single_packed_dint test.bin --dict dict.Gov2.freqs.single_packed.DSF-65536-16
+
+./encode multi_packed_dint ../new/Gov2.docs --dict dict.Gov2.docs.multi_packed.DSF-65536-16 --out test.bin
+./decode multi_packed_dint test.bin --dict dict.Gov2.docs.multi_packed.DSF-65536-16
+./encode multi_packed_dint ../new/Gov2.freqs --dict dict.Gov2.freqs.multi_packed.DSF-65536-16 --out test.bin
+./decode multi_packed_dint test.bin --dict dict.Gov2.freqs.multi_packed.DSF-65536-16

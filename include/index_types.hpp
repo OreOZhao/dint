@@ -98,7 +98,8 @@ using multi_overlapped_dint_index =
     (ef)(single)(uniform)(opt)(block_optpfor)(block_varintg8iu)(               \
         block_interpolative)(block_qmx)(block_mixed)(block_u32)(block_vbyte)(  \
         block_simple16)(block_varintgb)(block_maskedvbyte)(block_streamvbyte)( \
-        single_rect_dint)(single_packed_dint)(multi_packed_dint)
+        single_rect_dint)(single_packed_dint)(multi_packed_dint)(              \
+        single_overlapped_dint)(multi_overlapped_dint)
 #define DS2I_BLOCK_INDEX_TYPES                                                \
     (block_optpfor)(block_varintg8iu)(block_interpolative)(block_qmx)(        \
         block_mixed)(block_u32)(block_vbyte)(block_simple16)(block_varintgb)( \

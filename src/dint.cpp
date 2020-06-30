@@ -362,8 +362,8 @@ int main(int argc, const char** argv) {
     std::string basename = "../new/Gov2";
     // std::string basename = "/mnt/OPTANE/zhaoyu/Gov2/Gov2";
     dint_stats s_r_stats = single_rect_dint(basename);
-    dint_stats s_p_stats = single_packed_dint(basename);
-    dint_stats m_p_stats = multi_packed_dint(basename);
+    // dint_stats s_p_stats = single_packed_dint(basename);
+    // dint_stats m_p_stats = multi_packed_dint(basename);
     // dint_stats s_o_stats = single_overlapped_dint(basename);
     // dint_stats m_o_stats = multi_overlapped_dint(basename);
     /*

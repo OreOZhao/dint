@@ -73,6 +73,9 @@ void perftest(const char* index_filename, const char* wand_data_filename,
 
     logger() << "Warming up posting lists" << std::endl;
     std::unordered_set<term_id_type> warmed_up;
+
+    boost::progress_display progress(queries.size());
+
     for (auto const& q : queries) {
         for (auto t : q) {
             if (!warmed_up.count(t)) {
@@ -80,6 +83,7 @@ void perftest(const char* index_filename, const char* wand_data_filename,
                 warmed_up.insert(t);
             }
         }
+        progress += 1;
     }
 
     wand_data<> wdata;
